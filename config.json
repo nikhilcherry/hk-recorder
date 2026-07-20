@@ -1,0 +1,10 @@
+{
+  "fps": 30,
+  "resolution": {
+    "width": 1920,
+    "height": 1080
+  },
+  "segmentLengthSec": 10,
+  "bufferDir": "./buffer",
+  "outputDir": "./out"
+}

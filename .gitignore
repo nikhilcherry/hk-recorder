@@ -1,0 +1,5 @@
+buffer/*
+!buffer/.gitkeep
+out/*
+!out/.gitkeep
+node_modules/
