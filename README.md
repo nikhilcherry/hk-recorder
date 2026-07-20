@@ -86,3 +86,34 @@ Exits non-zero on any failure.
 - Requires a running display server (X11/Wayland) — `desktopCapturer` needs one to enumerate screen sources.
 - Video only (no audio track) in this module.
 - `lib/recorder.js` uses `nodeIntegration: true` / `contextIsolation: false` for its hidden capture window. This is safe here because the window only ever loads a bundled local file (`renderer/capture.html`), never remote or untrusted content.
+
+## Module 3: Highlight Marker
+
+Press **F8** (configurable via `markHotkey` in `config.json`) mid-recording, or click the small star button under the overlay's record button, to save a highlight clip without interrupting the recording.
+
+`lib/marker.js` exposes a single entry point:
+
+```js
+marker.mark()   // -> Promise<clipPath>, resolves once the clip has been written
+```
+
+It's decoupled from hotkeys entirely — the F8 binding and the overlay star button both just call `marker.mark()`, and any other caller (e.g. a future auto-detection module) can too.
+
+On `mark()`:
+
+1. The current timestamp is captured.
+2. Once `ts + 15s` has been captured by the recorder, the `[ts-30s, ts+15s]` window is cut out of the rolling segment buffer (`recorder.getSegments()`) via an ffmpeg concat + trim, independent of the segments' eventual use in the final stitched `session.mp4`.
+3. The clip is written to `./out/clips/clip_<n>.mp4` and an entry is appended to `./out/highlights.json`:
+   ```json
+   [{ "clip": "clips/clip_001.mp4", "markedAt": "<iso>", "sessionOffsetSec": 142, "durationSec": 45 }]
+   ```
+
+Marks near the start of a recording clamp to the available buffer instead of failing. Rapid/overlapping marks are each processed independently and don't clobber each other's `highlights.json` entries. `Recorder.stop()` now awaits any in-flight marks (via `registerPreClearHook`) before clearing the segment buffer, so a mark that's still extracting never loses its source segments.
+
+### Test
+
+```bash
+npm run test-mark
+```
+
+Starts a recording, marks a highlight at t=40s, verifies the resulting clip exists with a ~45s duration and a valid `highlights.json` entry, then confirms the recording still stops and stitches into a full `session.mp4`.
