@@ -7,7 +7,8 @@
   "scripts": {
     "start": "electron .",
     "test-record": "electron . --test-record",
-    "test-mark": "electron . --test-mark --ozone-platform=x11 --disable-features=WebRTCPipeWireCapturer"
+    "test-mark": "electron . --test-mark --ozone-platform=x11 --disable-features=WebRTCPipeWireCapturer",
+    "test-autodetect": "node test/test-autodetect.js"
   },
   "license": "MIT",
   "dependencies": {

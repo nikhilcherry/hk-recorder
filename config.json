@@ -8,5 +8,12 @@
   "bufferDir": "./buffer",
   "outputDir": "./out",
   "hotkey": "Insert",
-  "markHotkey": "F8"
+  "markHotkey": "F8",
+  "autoDetect": {
+    "enabled": true,
+    "aiDetect": false,
+    "sceneThreshold": 0.4,
+    "cooldownSec": 20,
+    "aiIntervalSec": 30
+  }
 }
