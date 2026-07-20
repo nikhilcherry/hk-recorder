@@ -7,5 +7,6 @@
   "segmentLengthSec": 10,
   "bufferDir": "./buffer",
   "outputDir": "./out",
-  "hotkey": "Insert"
+  "hotkey": "Insert",
+  "markHotkey": "F8"
 }

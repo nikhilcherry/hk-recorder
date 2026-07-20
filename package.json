@@ -6,7 +6,8 @@
   "private": true,
   "scripts": {
     "start": "electron .",
-    "test-record": "electron . --test-record"
+    "test-record": "electron . --test-record",
+    "test-mark": "electron . --test-mark --ozone-platform=x11 --disable-features=WebRTCPipeWireCapturer"
   },
   "license": "MIT",
   "dependencies": {
