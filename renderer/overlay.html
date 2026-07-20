@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 56px;
+    height: 56px;
+    background: transparent;
+    overflow: hidden;
+    user-select: none;
+  }
+
+  #drag-region {
+    -webkit-app-region: drag;
+    width: 100%;
+    height: 100%;
+  }
+
+  #btn {
+    -webkit-app-region: no-drag;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: rgba(30, 30, 30, 0.85);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  }
+
+  #dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #6b6b6b;
+    transition: background 0.15s ease;
+  }
+
+  #dot.recording {
+    background: #e02020;
+    animation: pulse 1.1s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%   { transform: scale(1);    opacity: 1;   }
+    50%  { transform: scale(1.25); opacity: 0.6; }
+    100% { transform: scale(1);    opacity: 1;   }
+  }
+</style>
+</head>
+<body>
+  <div id="drag-region">
+    <div id="btn">
+      <div id="dot"></div>
+    </div>
+  </div>
+  <script src="overlay.js"></script>
+</body>
+</html>

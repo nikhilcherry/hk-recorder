@@ -6,5 +6,6 @@
   },
   "segmentLengthSec": 10,
   "bufferDir": "./buffer",
-  "outputDir": "./out"
+  "outputDir": "./out",
+  "hotkey": "Insert"
 }
