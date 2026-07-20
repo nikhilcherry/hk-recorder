@@ -4,6 +4,7 @@ const fs = require('fs');
 const Recorder = require('./lib/recorder');
 const Trigger = require('./lib/trigger');
 const Marker = require('./lib/marker');
+const AutoDetectEngine = require('./lib/auto-detect/engine');
 
 const config = JSON.parse(fs.readFileSync(path.join(__dirname, 'config.json'), 'utf-8'));
 config.bufferDir = path.join(__dirname, config.bufferDir);
@@ -15,6 +16,7 @@ app.on('window-all-closed', (e) => e.preventDefault());
 let recorder;
 let trigger;
 let marker;
+let autoDetect;
 
 const markHotkey = config.markHotkey || 'F8';
 
@@ -23,6 +25,15 @@ app.whenReady().then(async () => {
   global.recorder = recorder;
   marker = new Marker(recorder);
   global.marker = marker;
+  autoDetect = new AutoDetectEngine(recorder, marker, config.autoDetect || {});
+  global.autoDetect = autoDetect;
+  recorder.registerSegmentHook((segment) => {
+    const segmentStartOffsetSec = (segment.startTs - recorder.getSessionStartTs()) / 1000;
+    const segmentDurationSec = (segment.endTs - segment.startTs) / 1000;
+    autoDetect.onSegmentComplete(segment.path, segmentStartOffsetSec, segmentDurationSec).catch((err) => {
+      console.error('[auto-detect] segment handling failed:', err.message);
+    });
+  });
 
   if (process.argv.includes('--test-record')) {
     const runTest = require('./test/test-record');
@@ -45,7 +56,7 @@ app.whenReady().then(async () => {
     return;
   }
 
-  trigger = new Trigger(recorder, config, marker);
+  trigger = new Trigger(recorder, config, marker, autoDetect);
   trigger.init();
 
   const ok = globalShortcut.register(markHotkey, () => setImmediate(() => {
